@@ -4,8 +4,14 @@
 #include <string.h>
 #include <mqueue.h>
 #include <errno.h>
+#include <math.h>
 
 #define PACKTET_LENGTH  100
+#define MAC_ADD_LEN        6
+#define MAC_TABLE_SIZE     100
+#define SWITCHSIM_SUCCESS  0
+#define SWITCHSIM_FAILURE  -1
+
 
 
 typedef struct ethHdr
@@ -52,8 +58,45 @@ typedef struct swSimIntf
 	swSimIntfStats	ifStats;
 }swSimIntf;
 
+struct macTable
+{
+  unsigned int ifIndex;
+  unsigned int vid;
+  unsigned char macAdd[MAC_ADD_LEN];
+};
+
+struct hashArray
+{
+  unsigned int key;
+  void *data;
+};
+
 swSimIntf  *ifLookUpByName(char *ifName);
+
 memPool* createMemPool(int size);
+
 int processMemPoolData(memPool *mPoolPtr);
+
 memPool *insertMemPoolData(memPool *mPoolPtr, int size, void *data);
+
 int engineProcess(msgBuffer *pktData);
+
+void * switchSimMalloc (unsigned long size);
+
+int switchSimMacTableInit ();
+
+unsigned int switchSimKeyGen (unsigned int ifIndex, char *mac,
+                              unsigned int *index, unsigned int vid);
+
+int isMacSame (char *mac1, char *mac2);
+
+struct macTable * switchSimMacTableLookup (unsigned int ifIndex, unsigned int vid,
+                                           char *mac);
+
+int macTableEntryAdd (unsigned int ifIndex, char *mac,
+                      unsigned int vid);
+
+int macTableEntryDel (unsigned int ifIndex, char *mac,
+                      unsigned int vid);
+
+int showMacTable ();
