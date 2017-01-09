@@ -5,6 +5,7 @@
 #include <mqueue.h>
 #include <errno.h>
 #include <math.h>
+#include <arpa/inet.h>
 
 #define PACKTET_LENGTH  100
 #define MAC_ADD_LEN        6
@@ -18,8 +19,9 @@ typedef struct ethHdr
 {
 	char dstMac[6];
 	char srcMac[6];
-	char ethType[4];
-	char ethTypeLen[2];
+	char vlanTag[4];
+	char typeLength[2];
+	char data[100];
 }ethHdr;
 
 typedef struct msgBuffer
